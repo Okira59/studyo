@@ -296,12 +296,12 @@ function buildHeads() {
   App.p.tracks.forEach((t, idx) => {
     const inst = t.type === 'audio' ? '🎤 Ses kaydı' : (Lib.INST[t.inst] ? Lib.INST[t.inst].name : '?');
     const h = el('div', 'th' + (t.id === App.selTrackId ? ' sel' : ''));
-    h.innerHTML = `<div class="col" style="background:${t.color}"></div><div class="in">
+    h.innerHTML = `<div class="col" style="background:${esc(t.color)}"></div><div class="in">
       <div class="row"><span class="nm" title="Çift tık: yeniden adlandır">${esc(t.name)}</span><span style="flex:1"></span>
       <button class="b-up" title="Yukarı taşı">▲</button><button class="b-x" title="Parçayı sil">✕</button></div>
       <div class="ins" title="Enstrümanı değiştirmek için soldaki listeden ⇄ düğmesine basın">${esc(inst)}</div>
       <div class="row"><button class="b-m${t.mute ? ' on' : ''}" title="Sessize al">M</button><button class="b-s${t.solo ? ' on' : ''}" title="Solo">S</button><button class="b-r${t.arm ? ' on' : ''}" title="Kayda hazırla">⏺</button>
-      <input type="range" min="0" max="1" step="0.01" value="${t.vol}" title="Ses seviyesi"></div></div>`;
+      <input type="range" min="0" max="1" step="0.01" value="${+t.vol || 0}" title="Ses seviyesi"></div></div>`;
     h.onmousedown = e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return; selectTrack(t.id); };
     h.querySelector('.nm').ondblclick = async () => { const n = await ask('Parça adı', t.name); if (n) { snap(); t.name = n; refreshAll(); } };
     const q = s => h.querySelector(s);
@@ -840,7 +840,12 @@ async function openFile(file) {
 function loadProject(p, audio) {
   const def = blankProject();
   p = Object.assign(def, p); p.master = Object.assign(blankProject().master, p.master); p.loop = Object.assign({ on: false, start: 0, end: 16 }, p.loop);
-  p.tracks.forEach(t => { t.eq = Object.assign({ lo: 0, mid: 0, hi: 0 }, t.eq); t.clips = t.clips || []; });
+  const num = (v, d) => (typeof v === 'number' && isFinite(v) ? v : d);
+  p.tracks.forEach((t, i) => {
+    t.eq = Object.assign({ lo: 0, mid: 0, hi: 0 }, t.eq); t.clips = Array.isArray(t.clips) ? t.clips : [];
+    if (!/^#[0-9a-f]{3,8}$/i.test(t.color)) t.color = COLORS[i % COLORS.length];
+    t.vol = num(t.vol, 0.8); t.pan = num(t.pan, 0); t.name = String(t.name ?? 'Parça'); t.id = String(t.id ?? uid());
+  });
   App.p = p; App.audio = audio || new Map(); App.peaks.clear(); App.undoStack = []; App.redoStack = []; App.pos = 0;
   App.selTrackId = p.tracks[0]?.id || null; App.selClipId = p.tracks[0]?.clips[0]?.id || null;
   refreshAll(); setTimeout(scrollPianoToNotes, 0);
