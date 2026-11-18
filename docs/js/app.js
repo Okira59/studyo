@@ -862,8 +862,14 @@ function loadProject(p, audio) {
 }
 // otomatik kayıt (IndexedDB)
 let idbP = null;
-function idb() { return idbP || (idbP = new Promise((res, rej) => { const r = indexedDB.open('okira-studyo', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = e => { idbP = null; rej(e); }; })); }
-async function idbPut(k, v) { const db = await idb(); return new Promise(r => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = r; tx.onerror = r; }); }
+function idb() { return idbP || (idbP = new Promise((res, rej) => { const r = indexedDB.open('okira-studyo', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => { const db = r.result; db.onclose = db.onversionchange = () => { try { db.close(); } catch (e) {} idbP = null; }; res(db); }; r.onerror = e => { idbP = null; rej(e); }; })); }
+async function idbPut(k, v) {
+  const db = await idb();
+  return new Promise(r => {
+    let tx; try { tx = db.transaction('kv', 'readwrite'); } catch (e) { idbP = null; App.saveDirty = true; return r(); }
+    tx.objectStore('kv').put(v, k); tx.oncomplete = r; tx.onerror = tx.onabort = () => { App.saveDirty = true; r(); };
+  });
+}
 async function idbGet(k) { const db = await idb(); return new Promise(r => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => r(q.result); q.onerror = () => r(null); }); }
 async function autosave() {
   if (!App.saveDirty || App.drag || App.prDrag || App.recording) return; App.saveDirty = false;
