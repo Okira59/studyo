@@ -722,7 +722,7 @@ function buildMixer() {
     const cv = el('canvas'); cv.width = 10; cv.height = 92; fad.append(f, cv); ch.appendChild(fad);
     App.meters.push({ cv, id: t.id });
     const bt = el('div', 'btns'), m = el('button', 'b-m' + (t.mute ? ' on' : ''), 'M'), s = el('button', 'b-s' + (t.solo ? ' on' : ''), 'S');
-    m.onclick = () => { t.mute = !t.mute; App.eng.syncAll(App.p); buildMixer(); buildHeads(); }; s.onclick = () => { t.solo = !t.solo; App.eng.syncAll(App.p); buildMixer(); buildHeads(); };
+    m.onclick = () => { t.mute = !t.mute; App.saveDirty = true; App.eng.syncAll(App.p); buildMixer(); buildHeads(); }; s.onclick = () => { t.solo = !t.solo; App.saveDirty = true; App.eng.syncAll(App.p); buildMixer(); buildHeads(); };
     bt.append(m, s); ch.appendChild(bt); box.appendChild(ch);
   }
   const M = App.p.master, ch = el('div', 'ch master'); ch.appendChild(el('div', 'nm', 'ANA ÇIKIŞ'));
