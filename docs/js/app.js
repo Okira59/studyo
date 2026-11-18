@@ -833,8 +833,16 @@ async function openFile(file) {
     const d = JSON.parse(await file.text()); if (!d.project) throw new Error('biçim');
     App.stop(); msg('Proje açılıyor...');
     const audio = new Map();
-    for (const id in d.audio || {}) audio.set(id, await App.ctx.decodeAudioData(await (await fetch(d.audio[id])).arrayBuffer()));
-    loadProject(d.project, audio); msg('Proje açıldı: ' + d.project.name);
+    for (const id in d.audio || {}) {
+      const u = d.audio[id]; if (typeof u !== 'string' || !u.startsWith('data:audio/')) throw new Error('ses verisi');
+      audio.set(id, await App.ctx.decodeAudioData(await (await fetch(u)).arrayBuffer()));
+    }
+    const prev = { p: App.p, audio: App.audio, undo: App.undoStack, redo: App.redoStack, t: App.selTrackId, c: App.selClipId };
+    try { loadProject(d.project, audio); } catch (e) {
+      Object.assign(App, { p: prev.p, audio: prev.audio, undoStack: prev.undo, redoStack: prev.redo, selTrackId: prev.t, selClipId: prev.c });
+      App.peaks.clear(); refreshAll(); throw e;
+    }
+    msg('Proje açıldı: ' + d.project.name);
   } catch (e) { modal('<h3>Proje açılamadı</h3><p>Dosya bozuk veya bir OkiRa Stüdyo projesi (.okst) değil.</p>'); }
 }
 function loadProject(p, audio) {
