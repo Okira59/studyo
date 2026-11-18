@@ -154,7 +154,7 @@ class Transport {
     let guard = 0;
     while (this.cursorTime < ahead && guard++ < 50) {
       const spb = 60 / p.bpm;
-      if (loop && this.cursor >= loop.end) { this.cursor = loop.start; this.segStart = true; this.segs.push({ t: this.cursorTime, b: loop.start, spb }); }
+      if (loop && this.cursor >= loop.end) { for (const v of this.active) if (v.isAudio) v.stop(); this.cursor = loop.start; this.segStart = true; this.segs.push({ t: this.cursorTime, b: loop.start, spb }); }
       const b0 = this.cursor; let b1 = b0 + 0.05 / spb;
       if (loop && b0 < loop.end && b1 >= loop.end) b1 = loop.end;
       this.schedule(b0, b1, this.cursorTime, spb, this.segStart, loop);
