@@ -140,7 +140,7 @@ const Composer = (() => {
         case 'block': at(0, L - 0.05, v, 80); break;
         case 'pad': at(0, L - 0.02, v, 72); break;
         case 'half': for (let x = 0; x < L - 1e-6; x += 2) at(x, Math.min(1.9, L - x), v, x ? 75 : 85); break;
-        case 'drone': at(0, L - 0.02, [v[0] - 12, v[0], v[0] + 7], 78); break;
+        case 'drone': { const r = near(c.rootPc, 54); at(0, L - 0.02, [r - 12, r, r + 7], 78); break; }
         case 'stab': for (let x = 0.5; x < L; x += 1) at(x, 0.25, v, 85); break;
         case 'power8': { const r = near(c.rootPc, 46); for (let x = 0; x < L - 1e-6; x += 0.5) at(x, 0.45, [r, r + 7, r + 12], x % 1 ? 85 : 100); break; }
         case 'strum': for (let x = 0; x < L - 1e-6; x += 1) at(x, 0.9, x % 2 ? v.slice().reverse() : v, x ? 75 : 95); break;
