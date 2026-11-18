@@ -204,7 +204,8 @@ function finishRecording() {
   snap();
   for (const [id, notes] of r.midi) {
     if (!notes.length) continue;
-    const tr = App.track(id), s = Math.floor(r.from / bb) * bb, e = Math.max(s + bb, Math.ceil(Math.max(end, ...notes.map(n => n.s + n.d)) / bb) * bb);
+    const tr = App.track(id); if (!tr) continue;
+    const s = Math.floor(r.from / bb) * bb, e = Math.max(s + bb, Math.ceil(Math.max(end, ...notes.map(n => n.s + n.d)) / bb) * bb);
     const c = { id: uid(), start: s, len: e - s, notes: notes.map(n => ({ s: n.s - s, d: n.d, p: n.p, v: n.v })) };
     tr.clips.push(c); App.selClipId = c.id; made++;
   }
@@ -216,7 +217,8 @@ function finishRecording() {
     if (n > sr * 0.1) {
       const buf = App.ctx.createBuffer(2, n, sr), L = buf.getChannelData(0), R = buf.getChannelData(1); let o = -skip;
       for (const [a, b] of r.chunks) { for (let i = 0; i < a.length; i++, o++) if (o >= 0 && o < n) { L[o] = a[i]; R[o] = b[i]; } }
-      for (const tr of r.audio) {
+      for (const t0 of r.audio) {
+        const tr = App.track(t0.id); if (!tr) continue;
         const id = addBuffer(buf), c = { id: uid(), start: r.from + lead / App.spb(), len: buf.duration / App.spb(), durS: buf.duration, off: 0, buf: id, gain: 0, name: 'Kayıt' };
         tr.clips.push(c); App.selClipId = c.id; made++;
       }
