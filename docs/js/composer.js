@@ -280,6 +280,7 @@ const Composer = (() => {
     return said.length;
   };
   let last = null;
+  const sigOf = p => JSON.stringify(p, (k, v) => (k === 'lenSec' ? undefined : v));
   let parsedText = '';
   function run(variation) {
     const txt = q('#aiText').value.trim();
@@ -291,9 +292,10 @@ const Composer = (() => {
     };
     const mode = pan.querySelector('input[name=aiMode]:checked').value;
     if (App.tr.playing) App.stop();
-    if (variation && last && JSON.stringify(App.p) === last.after) { App.p = JSON.parse(last.before); App.undoStack.pop(); }
     const g = Composer.generate(o);
     const keys = Object.keys(g.tracks); if (!keys.length) return msg('Oluşturulacak bölüm seçilmedi');
+    const replacing = variation && last && sigOf(App.p) === last.after;
+    if (replacing) { App.p = JSON.parse(last.before); App.undoStack.pop(); }
     const before = JSON.stringify(App.p); snap();
     if (mode === 'new') {
       const p = blankProject(); Object.assign(p, { name: g.name, bpm: g.bpm, sig: g.sig, tuning: g.tuning, root: g.root, swing: g.swing, loop: { on: false, start: 0, end: g.bars * g.bb } });
@@ -301,7 +303,7 @@ const Composer = (() => {
     } else {
       Object.assign(App.p, { bpm: g.bpm, sig: g.sig, tuning: g.tuning, root: g.root });
     }
-    const bbNow = App.barBeats(), start = mode === 'new' ? 0 : Math.floor(App.pos / bbNow) * bbNow;
+    const bbNow = App.barBeats(), start = mode === 'new' ? 0 : replacing && last.mode === 'add' ? last.start : Math.floor(App.pos / bbNow) * bbNow;
     let melId = null;
     for (const k of keys) {
       const d = g.tracks[k], kit = Lib.INST[d.inst].type === 'kit';
@@ -311,7 +313,7 @@ const Composer = (() => {
     }
     App.selTrackId = melId; App.selClipId = App.track(melId).clips[0].id; App.eng.syncAll(App.p);
     refreshAll(); showTab('piano');
-    last = { before, after: JSON.stringify(App.p) };
+    last = { before, after: sigOf(App.p), mode, start };
     const secs = Math.round(g.bars * g.bb * 60 / g.bpm);
     q('#aiInfo').innerHTML = `Oluşturuldu: <b>${esc(g.style.name)}</b> · ${esc(g.mood)} · ${esc(g.tuName)} · Kök ${Lib.NOTE_NAMES[g.root]} · ${g.bpm} BPM · ${g.sig.join('/')} · ${g.bars} ölçü (~${secs} sn). Notaları piyano rulosunda değiştirebilirsiniz; geri almak için Ctrl+Z.`;
     msg(`Beste hazır: ${g.style.name}, ${g.bpm} BPM`);
