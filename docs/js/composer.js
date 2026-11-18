@@ -302,6 +302,8 @@ const Composer = (() => {
       App.p = p; App.pos = 0;
     } else {
       Object.assign(App.p, { bpm: g.bpm, sig: g.sig, tuning: g.tuning, root: g.root });
+      App.p.tracks.forEach(t => t.type === 'audio' && t.clips.forEach(c => { if (c.durS) c.len = c.durS / App.spb(); }));
+      App.tr.tempoChanged();
     }
     const bbNow = App.barBeats(), start = mode === 'new' ? 0 : replacing && last.mode === 'add' ? last.start : Math.floor(App.pos / bbNow) * bbNow;
     let melId = null;
