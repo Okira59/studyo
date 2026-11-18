@@ -319,12 +319,13 @@ const Composer = (() => {
     }
     App.selTrackId = melId; App.selClipId = App.track(melId).clips[0].id; App.eng.syncAll(App.p);
     refreshAll(); showTab('piano');
-    last = { before, after: sigOf(App.p), mode, start };
+
     const secs = Math.round(g.bars * g.bb * 60 / g.bpm);
     q('#aiInfo').innerHTML = `Oluşturuldu: <b>${esc(g.style.name)}</b> · ${esc(g.mood)} · ${esc(g.tuName)} · Kök ${Lib.NOTE_NAMES[g.root]} · ${g.bpm} BPM · ${g.sig.join('/')} · ${g.bars} ölçü (~${secs} sn). Notaları piyano rulosunda değiştirebilirsiniz; geri almak için Ctrl+Z.`;
     msg(`Beste hazır: ${g.style.name}, ${g.bpm} BPM`);
     const L = App.p.loop;
     if (L.on && (start < L.start || start >= L.end)) { L.on = false; refreshTop(); }
+    last = { before, after: sigOf(App.p), mode, start };
     if (q('#aiPlay').checked) { setPos(start); play(); }
   }
   q('#aiParse').addEventListener('click', () => { parsedText = q('#aiText').value.trim(); });
