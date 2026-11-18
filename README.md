@@ -10,13 +10,14 @@ Bilgisayarda çalışan, internetsiz müzik yapım programı (Logic Pro benzeri)
 - Bilgisayar klavyesi ve USB MIDI klavye ile çalma ve kayıt; mikrofonla ses kaydı; metronom, sayım, döngü, swing.
 - **Mikser**: kanal başına 3 bantlı ekolayzır, kompresör, yankı, eko, pan, solo/sessiz; ana çıkışta EQ, kompresör ve limiter.
 - **Şarkıdan ses ayırma**: vokal, davul, bas, diğer enstrümanlar + karaoke (STFT orta/yan analizi ve harmonik/perküsif ayrıştırma, internetsiz).
+- **Yapay Zekâ Besteci** (sağ alt köşe): tarz (31 tarz: Pop, Arabesk, Çiftetelli, Roman Havası, Halay, Zeybek, Trap, House, Salsa, Hint...), ruh hali, makam, ton, tempo ve uzunluk seçilir veya Türkçe tarif yazılır ("hüzünlü arabesk, 85 tempo, ney ile"); ritim, bas, akor, pad ve melodi düzenlenebilir parçalar olarak üretilir. İnternetsiz, kural ve olasılık tabanlıdır.
 - Proje kaydetme/açma (`.okst`), otomatik kayıt, WAV dışa aktarma (tüm şarkı, döngü bölgesi veya her parça ayrı).
 
 Sesler programın içinde sentezle üretilir (hazır ses kaydı kullanılmaz).
 
 ## Yapı
 - `docs/` — uygulamanın kendisi (HTML/CSS/JavaScript, Web Audio API). `docs/index.html` tarayıcıda açılır.
-  - `js/synth.js` ses sentezi (Karplus-Strong, modal, osilatör/formant), `js/instdata.js` enstrümanlar, kitler ve makamlar, `js/rhythms.js` hazır ritimler, `js/engine.js` ses motoru, mikser ve WAV, `js/separate.js` ses ayırma, `js/app.js` arayüz.
+  - `js/synth.js` ses sentezi (Karplus-Strong, modal, osilatör/formant), `js/instdata.js` enstrümanlar, kitler ve makamlar, `js/rhythms.js` hazır ritimler, `js/engine.js` ses motoru, mikser ve WAV, `js/separate.js` ses ayırma, `js/composer.js` yapay zekâ besteci, `js/app.js` arayüz.
 - `desktop/` — Windows masaüstü kabuğu (Electron) ve NSIS kurulum betiği.
 
 ## Windows kurulum dosyasını üretmek
