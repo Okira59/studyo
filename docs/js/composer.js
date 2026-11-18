@@ -136,7 +136,7 @@ const Composer = (() => {
     const ct = parts.chords ? T('chords', S.ch === 'drone' ? 'YZ Dem / Akor' : 'YZ Akor', cI, '#e8d23a') : null;
     if (ct) for (const c of chords) {
       const v = voice(c.pcs, 60), L = c.len, at = (s, d, ns, vel) => ns.forEach((p, i) => push(ct, c.s + s + (S.ch === 'strum' ? i * 0.02 : 0), d, p, vel));
-      if (c.sec === 'O' && c === chords[chords.length - 1]) { at(0, L - 0.1, v, 85); continue; }
+      if (c.sec === 'O' && c === chords[chords.length - 1]) { const r = near(c.rootPc, 54); at(0, L - 0.1, S.ch === 'drone' ? [r - 12, r, r + 7] : v, 85); continue; }
       switch (S.ch) {
         case 'block': at(0, L - 0.05, v, 80); break;
         case 'pad': at(0, L - 0.02, v, 72); break;
