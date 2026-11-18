@@ -1028,6 +1028,7 @@ async function main() {
   App.tab = 'piano';
   if (!(await loadAutosave())) { loadProject(demoProject()); msg('Hoş geldiniz! Örnek şarkıyı dinlemek için ▶ düğmesine basın. Yardım için ?'); }
   else msg('Son çalışmanız açıldı');
+  const ft = App.track(); showTab(ft && ft.type === 'inst' && Lib.INST[ft.inst]?.type === 'kit' ? 'steps' : 'piano');
   setInterval(autosave, 4000);
   requestAnimationFrame(loop);
 }
