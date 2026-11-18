@@ -861,7 +861,8 @@ function loadProject(p, audio) {
   refreshAll(); setTimeout(scrollPianoToNotes, 0);
 }
 // otomatik kayıt (IndexedDB)
-function idb() { return new Promise((res, rej) => { const r = indexedDB.open('okira-studyo', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = rej; }); }
+let idbP = null;
+function idb() { return idbP || (idbP = new Promise((res, rej) => { const r = indexedDB.open('okira-studyo', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = e => { idbP = null; rej(e); }; })); }
 async function idbPut(k, v) { const db = await idb(); return new Promise(r => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = r; tx.onerror = r; }); }
 async function idbGet(k) { const db = await idb(); return new Promise(r => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => r(q.result); q.onerror = () => r(null); }); }
 async function autosave() {
@@ -1000,7 +1001,8 @@ function initTop() {
   window.addEventListener('dragover', e => e.preventDefault());
   window.addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return; if (/\.(okst|json)$/i.test(f.name)) openFile(f); else importAudioFile(f); });
   window.addEventListener('resize', () => App.dirty = true);
-  window.addEventListener('beforeunload', () => { App.saveDirty = true; autosave(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') autosave(); });
+  window.addEventListener('beforeunload', () => { autosave(); });
 }
 function toggleLoop() {
   const L = App.p.loop;
@@ -1044,7 +1046,8 @@ async function main() {
   if (!(await loadAutosave())) { loadProject(demoProject()); msg('Hoş geldiniz! Örnek şarkıyı dinlemek için ▶ düğmesine basın. Yardım için ?'); }
   else msg('Son çalışmanız açıldı');
   const ft = App.track(); showTab(ft && ft.type === 'inst' && Lib.INST[ft.inst]?.type === 'kit' ? 'steps' : 'piano');
-  setInterval(autosave, 4000);
+  idb().catch(() => {});
+  setInterval(autosave, 2000);
   requestAnimationFrame(loop);
 }
 main();
