@@ -199,13 +199,16 @@ const Composer = (() => {
             const off = s0 + (ph + half * motifBars) * bb;
             if (off >= (sec.s + sec.bars) * bb - 1e-6) break;
             const cad = half === 1;
+            const secEnd = (sec.s + sec.bars) * bb;
             m.r.forEach(([t, d], i) => {
+              if (off + t >= secEnd - 1e-6) return;
+              d = Math.min(d, secEnd - off - t);
               const abs = off + t, strong = Math.abs(t % 1) < 1e-6 && (Math.abs(t % 2) < 1e-6 || Math.abs(t % bb) < 1e-6);
               const lastNote = cad && i === m.r.length - 1;
               let j;
               if (half === 1 && first && R() < 0.6 && !lastNote) { j = clamp(first[i] + (R() < 0.3 ? pick([-1, 1]) : 0), 0, sn.length - 1); if (strong) j = toChordTone(j, abs, false); }
               else j = choose(prev, abs, strong, m.range);
-              if (lastNote) { j = toChordTone(j, abs, true); d = Math.max(d, Math.min(2, motifBars * bb - t)); }
+              if (lastNote) { j = toChordTone(j, abs, true); d = Math.min(Math.max(d, Math.min(2, motifBars * bb - t)), secEnd - abs); }
               if (half === 0) (first = first || [])[i] = j;
               if (S.orn && d >= 0.5 && R() < 0.3 && t >= 0.12 && j + 1 < sn.length) push(mt, abs - 0.12, 0.11, sn[j + 1], 70);
               push(mt, abs, d * 0.95, sn[j], strong ? 105 : 88);
