@@ -696,8 +696,8 @@ function initSteps() {
     applyPreset(t, Rhythms[sel.value]); sel.value = '';
   };
   $('#stepRes').onchange = buildSteps;
-  $('#stepLen').onchange = () => { const c = App.clip(); if (!c) return; snap(); setClipLen(c, +$('#stepLen').value, true); };
-  $('#bStepClear').onclick = () => { const c = App.clip(); if (!c) return; snap(); c.notes = []; refreshAll(); };
+  $('#stepLen').onchange = () => { const c = App.clip(); if (!c || !prInfo().kit) return; snap(); setClipLen(c, +$('#stepLen').value, true); };
+  $('#bStepClear').onclick = () => { const c = App.clip(); if (!c || !prInfo().kit) return; snap(); c.notes = []; refreshAll(); };
 }
 
 // ---------------- Mikser ----------------
