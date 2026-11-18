@@ -112,7 +112,8 @@ const Composer = (() => {
         reggae: [[1, 0, 0.45], [1.5, 0, 0.4], [2, 7, 0.9], [3, 0, 0.45], [3.5, 0, 0.4]], tumbao: [[1.5, 0, 1.4], [3, 7, 0.9]],
         bossa: [[0, 0, 1.4], [1.5, 7, 0.45], [2, 0, 1.4], [3.5, 7, 0.45]], funk: [[0, 0, 0.4], [0.75, 12, 0.2], [1.5, 0, 0.4], [2.25, 7, 0.2], [2.5, 0, 0.4], [3.5, 12, 0.4]],
       }[S.bs];
-      const kick = (rh.rows[0] || 'x').split(''), kd = bb / kick.length;
+      const kickRow = rh.rows[0] || Object.values(rh.rows).filter(r => r[0] !== '.').sort((a, b) => a.replace(/\./g, '').length - b.replace(/\./g, '').length)[0] || 'x';
+      const kick = kickRow.split(''), kd = bb / kick.length;
       chords.forEach((c, ci) => {
         let R0 = 36 + c.rootPc; if (R0 > 45) R0 -= 12;
         if (S.bs === 'root1') { for (let x = 0; x < c.len; x += bb) push(bt, c.s + x, Math.min(bb, c.len - x) * 0.9, R0, 100); return; }
