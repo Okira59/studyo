@@ -295,9 +295,9 @@ const Composer = (() => {
       parts: { drums: q('#aiDr').checked, bass: q('#aiBs').checked, chords: q('#aiCh').checked, melody: q('#aiMl').checked, pad: q('#aiPd').checked },
     };
     const mode = pan.querySelector('input[name=aiMode]:checked').value;
-    if (App.tr.playing) App.stop();
     const g = Composer.generate(o);
     const keys = Object.keys(g.tracks); if (!keys.length) return msg('Oluşturulacak bölüm seçilmedi');
+    if (App.tr.playing) App.stop();
     const replacing = variation && last && sigOf(App.p) === last.after;
     if (replacing) { App.p = JSON.parse(last.before); App.undoStack.pop(); }
     const before = JSON.stringify(App.p); snap();
