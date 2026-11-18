@@ -487,7 +487,7 @@ function splitSelClip() {
   const c = App.clip(), t = App.clipTrack(), b = App.pos; if (!c || b <= c.start || b >= c.start + c.len) return msg('Bölmek için çalma çizgisini bölgenin üzerine getirin');
   snap(); const k = b - c.start, n = JSON.parse(JSON.stringify(c)); n.id = uid(); n.start = b; n.len = c.len - k; c.len = k;
   if (t.type === 'audio') { n.off = (c.off || 0) + k * App.spb(); n.durS = n.len * App.spb(); c.durS = c.len * App.spb(); }
-  else { n.notes = c.notes.filter(x => x.s >= k).map(x => Object.assign(x, { s: x.s - k })); c.notes = c.notes.filter(x => x.s < k); }
+  else { n.notes = c.notes.filter(x => x.s >= k).map(x => Object.assign({}, x, { s: x.s - k })); c.notes = c.notes.filter(x => x.s < k); }
   t.clips.push(n); refreshAll(); msg('Bölge ikiye bölündü');
 }
 
