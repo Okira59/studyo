@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OkiRa Stüdyo</title>
+<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="icon" href="icon.png">
+</head>
+<body>
+<header id="top">
+  <div class="brand">🎵 OkiRa <b>Stüdyo</b></div>
+  <div class="grp">
+    <button id="bNew" title="Yeni proje">📄</button><button id="bOpen" title="Proje aç">📂</button><button id="bSave" title="Projeyi dosyaya kaydet">💾</button>
+    <button id="bUndo" title="Geri al (Ctrl+Z)">↶</button><button id="bRedo" title="Yinele (Ctrl+Y)">↷</button>
+  </div>
+  <div class="grp transport">
+    <button id="bHome" title="Başa dön">⏮</button>
+    <button id="bPlay" class="big" title="Çal / Durdur (Boşluk)">▶</button>
+    <button id="bStop" title="Durdur">⏹</button>
+    <button id="bRec" class="rec" title="Kayıt (R)">⏺</button>
+    <button id="bLoop" class="tog" title="Döngü (C)">🔁</button>
+    <button id="bMetro" class="tog" title="Metronom (M)">🕒</button>
+    <button id="bCount" class="tog" title="Kayıttan önce 1 ölçü say">1‑2‑3</button>
+  </div>
+  <div class="lcd"><div id="pos">1.1.1</div><div id="tim">00:00.0</div></div>
+  <div class="grp lcdset">
+    <label>Tempo <input id="bpm" type="number" min="30" max="300" value="100"></label>
+    <label>Ölçü <select id="sig"></select></label>
+    <label>Kök <select id="root"></select></label>
+    <label>Makam/Akort <select id="tuning"></select></label>
+    <label>Swing <input id="swing" type="range" min="0" max="100" value="0"></label>
+  </div>
+  <div class="grp right">
+    <button id="bSep" title="Şarkıdan ses ayır">🎚 Ses Ayır</button>
+    <button id="bExport" title="WAV olarak dışa aktar">⬇ WAV</button>
+    <button id="bHelp" title="Yardım">?</button>
+    <canvas id="mMeter" width="14" height="36"></canvas>
+  </div>
+</header>
+<main id="main">
+  <aside id="lib">
+    <input id="libSearch" placeholder="🔍 Enstrüman ara (ör. bağlama, sitar)">
+    <div id="libList"></div>
+    <div class="libhint">Tıkla: dinle · <b>+</b> yeni parça · <b>⇄</b> seçili parçaya ata</div>
+  </aside>
+  <section id="arr">
+    <div id="heads"><div class="rulerpad"><button id="bAddTrack">＋ Parça</button></div><div id="headList"></div></div>
+    <div id="tlWrap"><div id="tl"><div id="tlSpacer"></div></div><canvas id="tlCanvas"></canvas></div>
+  </section>
+</main>
+<section id="editor">
+  <div id="tabs">
+    <button data-tab="piano" class="on">🎹 Piyano Rulosu</button>
+    <button data-tab="steps">🥁 Ritim Makinesi</button>
+    <button data-tab="mixer">🎚 Mikser</button>
+    <button data-tab="keys">⌨ Klavye</button>
+    <span id="clipInfo"></span>
+  </div>
+  <div id="pane-piano" class="pane on">
+    <div class="tools">
+      <label>Izgara <select id="grid"><option value="1">1/4</option><option value="0.5">1/8</option><option value="0.25" selected>1/16</option><option value="0.125">1/32</option><option value="0.3333">1/8 üçleme</option><option value="0.1667">1/16 üçleme</option></select></label>
+      <button id="bQuant">Kuantize</button>
+      <button id="bTrUp">Oktav ↑</button><button id="bTrDn">Oktav ↓</button><button id="bSemiUp">+1 yarım</button><button id="bSemiDn">−1 yarım</button>
+      <label>Uzunluk (ölçü) <input id="clipLen" type="number" min="1" max="64" value="1"></label>
+      <button id="bClearClip">Temizle</button>
+      <span class="hint">Boş yere tıkla: nota · sürükle: taşı · kenardan çek: uzat · sağ tık / çift tık: sil</span>
+    </div>
+    <div id="prWrap"><div id="pr"><div id="prSpacer"></div></div><canvas id="prCanvas"></canvas></div>
+  </div>
+  <div id="pane-steps" class="pane">
+    <div class="tools">
+      <label>Hazır ritim <select id="preset"></select></label>
+      <label>Uzunluk (ölçü) <input id="stepLen" type="number" min="1" max="16" value="1"></label>
+      <label>Adım <select id="stepRes"><option value="0.25">1/16</option><option value="0.5">1/8</option><option value="0.3333">1/8 üçleme</option></select></label>
+      <button id="bStepClear">Temizle</button>
+      <span class="hint">Tıkla: vuruş ekle/sil · sağ tık: vurgulu / hafif</span>
+    </div>
+    <div id="steps"></div>
+  </div>
+  <div id="pane-mixer" class="pane"><div id="mixer"></div></div>
+  <div id="pane-keys" class="pane">
+    <div class="tools"><button id="kbDn">◀ Oktav</button><span id="kbOct">Oktav 4</span><button id="kbUp">Oktav ▶</button>
+      <span class="hint">Bilgisayar klavyesi: A W S E D F T G Y H U J K O L P · Z/X oktav · MIDI klavye otomatik algılanır</span></div>
+    <div id="kb"></div>
+  </div>
+</section>
+<footer id="status"><span id="msg">Hazır</span><span class="credit">OkiRa8406 tarafından yapılmıştır</span></footer>
+<div id="modal" class="hidden"><div class="box"><div id="mBody"></div><div class="mBtns" id="mBtns"></div></div></div>
+<input type="file" id="fileProj" accept=".okst,.json" hidden>
+<input type="file" id="fileAudio" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac" hidden>
+<script src="js/dsp.js?v=5"></script>
+<script src="js/synth.js?v=5"></script>
+<script src="js/instdata.js?v=5"></script>
+<script src="js/calib.js?v=5"></script>
+<script src="js/samples.js?v=5"></script>
+<script src="samples/index.js?v=5"></script>
+<script src="js/rhythms.js?v=5"></script>
+<script src="js/engine.js?v=5"></script>
+<script src="js/separate.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
+<script src="js/composer.js?v=5"></script>
+</body>
+</html>
