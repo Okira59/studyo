@@ -241,6 +241,7 @@ function encodeWav(buf) {
 }
 
 async function renderOffline(app, opts = {}) {
+  if (typeof Samples !== 'undefined') await Samples.ensureAll(app.ctx, app.p.tracks.filter(t => t.type === 'inst').map(t => t.inst));
   const p = app.p, sr = app.ctx.sampleRate, spb = 60 / p.bpm;
   const startB = opts.from ?? 0, endB = opts.to ?? app.songEnd();
   const secs = (endB - startB) * spb + (opts.tail ?? 3);

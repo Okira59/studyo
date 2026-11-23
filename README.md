@@ -13,7 +13,7 @@ Bilgisayarda çalışan, internetsiz müzik yapım programı (Logic Pro benzeri)
 - **Yapay Zekâ Besteci** (sağ alt köşe): tarz (31 tarz: Pop, Arabesk, Çiftetelli, Roman Havası, Halay, Zeybek, Trap, House, Salsa, Hint...), ruh hali, makam, ton, tempo ve uzunluk seçilir veya Türkçe tarif yazılır ("hüzünlü arabesk, 85 tempo, ney ile"); ritim, bas, akor, pad ve melodi düzenlenebilir parçalar olarak üretilir. İnternetsiz, kural ve olasılık tabanlıdır.
 - Proje kaydetme/açma (`.okst`), otomatik kayıt, WAV dışa aktarma (tüm şarkı, döngü bölgesi veya her parça ayrı).
 
-Sesler programın içinde sentezle üretilir (hazır ses kaydı kullanılmaz).
+Sesler gerçek enstrüman kayıtlarından oluşan hazır kitlerden çalınır: 147 enstrüman ve kit kayıtlı örneklerle gelir (FluidR3 GM, MIT lisansı; VCSL, CC0). Kayıtlar `docs/samples/` içindedir, internet gerekmez; `tools/build_samples.py` ile yeniden üretilir. Bağlama, ud, ney, kanun gibi serbest kaydı olmayan enstrümanlar en yakın gerçek kayıtlardan (gitar, shakuhachi, arp…) ses ayarıyla kurulmuştur. Kaydı olmayan birkaç synth enstrümanı sentezle çalar.
 
 ## Yapı
 - `docs/` — uygulamanın kendisi (HTML/CSS/JavaScript, Web Audio API). `docs/index.html` tarayıcıda açılır.

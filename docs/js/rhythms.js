@@ -2,14 +2,14 @@
 // Hazır ritim kalıpları. Her karakter 1 adım (varsayılan 1/16). x=normal, X=vurgulu, o=hafif
 const Rhythms = [
   // ---- Akustik Davul (kit_akustik): 0 kick 1 trampet 2 rim 3 clap 4 hh kapalı 5 hh açık 6 pedal 7-9 tom 10 crash 11 ride 12 tef 13 cowbell
-  { kit: 'kit_akustik', name: 'Rock', sig: [4, 4], rows: { 0: 'x.......x.x.....', 1: '....X.......X...', 4: 'x.x.x.x.x.x.x.x.' } },
+  { kit: 'kit_rock', name: 'Rock', sig: [4, 4], rows: { 0: 'x.......x.x.....', 1: '....X.......X...', 4: 'x.x.x.x.x.x.x.x.' } },
   { kit: 'kit_akustik', name: 'Pop', sig: [4, 4], rows: { 0: 'x.....x.x.......', 1: '....X.......X...', 4: 'xoxoxoxoxoxoxoxo' } },
-  { kit: 'kit_akustik', name: 'Disko', sig: [4, 4], rows: { 0: 'x...x...x...x...', 1: '....X.......X...', 4: 'x.x.x.x.x.x.x.x.', 5: '..x...x...x...x.' } },
-  { kit: 'kit_akustik', name: 'Funk', sig: [4, 4], rows: { 0: 'x..x..x...x..x..', 1: '....X..o.o..X..o', 4: 'xxxxxxxxxxxxxxxx' } },
-  { kit: 'kit_akustik', name: 'Shuffle / Blues', sig: [12, 8], rows: { 0: 'x.....x.....', 1: '......X.....', 11: 'x.ox.ox.ox.o' } },
+  { kit: 'kit_elektro', name: 'Disko', sig: [4, 4], rows: { 0: 'x...x...x...x...', 1: '....X.......X...', 4: 'x.x.x.x.x.x.x.x.', 5: '..x...x...x...x.' } },
+  { kit: 'kit_oda', name: 'Funk', sig: [4, 4], rows: { 0: 'x..x..x...x..x..', 1: '....X..o.o..X..o', 4: 'xxxxxxxxxxxxxxxx' } },
+  { kit: 'kit_caz', name: 'Shuffle / Blues', sig: [12, 8], rows: { 0: 'x.....x.....', 1: '......X.....', 11: 'x.ox.ox.ox.o' } },
   { kit: 'kit_akustik', name: 'Balad 6/8', sig: [6, 8], rows: { 0: 'x...........', 1: '......X.....', 4: 'x.x.x.x.x.x.' } },
   { kit: 'kit_akustik', name: 'Vals 3/4', sig: [3, 4], rows: { 0: 'x...........', 1: '....x...x...', 4: 'x...x...x...' } },
-  { kit: 'kit_akustik', name: 'Bossa Nova', sig: [4, 4], rows: { 0: 'x..xx..xx..xx..x', 2: 'x..x..x...x..x..', 4: 'x.x.x.x.x.x.x.x.' } },
+  { kit: 'kit_caz', name: 'Bossa Nova', sig: [4, 4], rows: { 0: 'x..xx..xx..xx..x', 2: 'x..x..x...x..x..', 4: 'x.x.x.x.x.x.x.x.' } },
   { kit: 'kit_akustik', name: 'Reggae (One Drop)', sig: [4, 4], rows: { 0: '........X.......', 2: '........X.......', 4: '..x...x...x...x.' } },
   // ---- 808 (kit_808): 0 kick 1 snare 2 clap 3 hh 4 oh 5 tom 6 cowbell 7 rim 8 clave 9 conga 10 maracas 11 zil 12 909kick 13 hat rulo
   { kit: 'kit_808', name: 'Trap', sig: [4, 4], rows: { 0: 'x......x..x.....', 2: '........X.......', 3: 'x.x.x.x.x.xxx.x.', 13: '..........xx.xxx' } },

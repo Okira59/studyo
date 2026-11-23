@@ -298,8 +298,38 @@ const Synth = (() => {
     return v;
   }
 
+  // Gerçek kayıt (örnek) çalıcı: en yakın kök notayı seçip hızını ayarlar (makam komaları dahil)
+  function sampleVoice(ctx, dest, t, S, note, f, vel) {
+    const pk = velGain(vel) * (S.g ?? 1);
+    if (S.kit) {
+      const arr = S.b[note]; if (!arr || !arr.length) return null;
+      return bufferVoice(ctx, dest, t, arr[(S.rr++) % arr.length], pk, 0);
+    }
+    let bi = 0, bd = Infinity;
+    for (let i = 0; i < S.f.length; i++) { const d = Math.abs(Math.log(f / S.f[i])); if (d < bd) { bd = d; bi = i; } }
+    const buf = S.b[bi], rate = f / S.f[bi], rel = S.rel ?? 0.3;
+    const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate;
+    if (S.loop) { src.loop = true; src.loopStart = S.loop[0]; src.loopEnd = Math.min(S.loop[1], buf.duration); }
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pk, t + 0.004);
+    src.connect(g); g.connect(dest); src.start(t);
+    const v = { end: S.loop ? Infinity : t + buf.duration / rate, release(rt) {
+      rt = Math.max(rt, t + 0.01); if (rt >= v.end) return;
+      if (g.gain.cancelAndHoldAtTime) g.gain.cancelAndHoldAtTime(rt); else { g.gain.cancelScheduledValues(rt); g.gain.setValueAtTime(pk, rt); }
+      g.gain.setTargetAtTime(0, rt, rel / 4);
+      const e = rt + rel * 1.6 + 0.02; try { src.stop(e); } catch (er) {} v.end = e;
+    }, stop() { try { src.stop(); } catch (e) {} } };
+    src.onended = () => { try { g.disconnect(); } catch (e) {} };
+    return v;
+  }
+
   // inst: enstrüman tanımı, note: MIDI notası (kit için ped numarası), f: frekans
   function noteOn(ctx, dest, t, inst, note, f, vel) {
+    if (typeof Samples !== 'undefined' && Samples.has(inst.id)) {
+      const S = Samples.get(inst.id);
+      if (S) { const v = sampleVoice(ctx, dest, t, S, note, f, vel); if (v) return v; }
+      else Samples.ensure(ctx, inst.id);
+    }
     const sr = ctx.sampleRate, gain = velGain(vel) * (inst.gain ?? 1);
     if (inst.type === 'kit') {
       const pad = inst.pads[note]; if (!pad) return null;

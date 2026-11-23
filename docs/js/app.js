@@ -103,6 +103,7 @@ function initAudio() {
 const preview = { id: '__preview', inst: 'piyano', vol: 0.8, pan: 0, eq: {}, comp: 0, rev: 0.15, dly: 0 };
 function previewInst(id) {
   const inst = Lib.INST[id]; if (!inst) return;
+  if (Samples.pending([id]).length) { Samples.ensure(App.ctx, id).then(r => r && previewInst(id)); return; }
   preview.inst = id; App.eng.strip(preview); App.eng.update(preview, false, App.ctx.currentTime);
   const t = App.ctx.currentTime + 0.05;
   if (inst.type === 'kit') { [0, 1, 2, 3].forEach((n, i) => { if (inst.pads[n]) App.eng.play(App.p, preview, t + i * 0.22, n, 100); }); return; }
@@ -162,6 +163,12 @@ App.stop = function () {
 };
 function play() {
   if (App.tr.playing) return App.stop();
+  const need = Samples.pending(App.p.tracks.filter(t => t.type === 'inst').map(t => t.inst));
+  if (need.length) {
+    if (App.smpWait) return; App.smpWait = true; msg('Enstrüman sesleri yükleniyor…');
+    Samples.ensureAll(App.ctx, need).finally(() => { App.smpWait = false; msg(''); if (!App.tr.playing) play(); });
+    return;
+  }
   App.eng.syncAll(App.p);
   App.playFrom = App.pos;
   App.tr.start(App.pos);
@@ -799,6 +806,7 @@ function refreshTop() {
   document.title = `${p.name} — OkiRa Stüdyo`;
 }
 function refreshAll() {
+  if (App.ctx) Samples.ensureAll(App.ctx, App.p.tracks.filter(t => t.type === 'inst').map(t => t.inst));
   if (App.selTrackId && !App.track()) App.selTrackId = null;
   if (!App.selTrackId && App.p.tracks.length) App.selTrackId = App.p.tracks[0].id;
   if (App.selClipId && !App.clip()) App.selClipId = null;

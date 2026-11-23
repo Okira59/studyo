@@ -229,6 +229,7 @@ const Lib = (() => {
     pad('Tef (Tambourine)', [J(0.06, 1, { f: 7500, n: 6, spread: 0.02 })], { g: 0.5 }),
     pad('İnek Çanı (Cowbell)', [Me(0.12, 1, { fs: [540, 800], ft: 'bp', ff: 800, q: 1.5 })], { g: 0.6 }),
   ]);
+  for (const [kid, kn] of [['kit_oda', 'Oda Davul Seti (Room)'], ['kit_rock', 'Rock Davul Seti (Power)'], ['kit_caz', 'Caz Davul Seti (Fırça)'], ['kit_elektro', 'Elektronik Davul Seti']]) kit(kid, kn, INST.kit_akustik.pads);
   kit('kit_808', 'Elektronik 808 / Trap', [
     pad('808 Kick', [T(65, 0.9, 1, 45, 0.02), N('lp', 3000, 0.003, 0.4)], { dur: 1.6, drive: 1.5 }),
     pad('808 Trampet', [T(180, 0.08, 0.5), T(330, 0.06, 0.3), N('hp', 1800, 0.12, 0.7)]),
